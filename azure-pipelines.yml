@@ -9,12 +9,8 @@ pool:
 
 variables:
   repoUrl: 'https://github.com/souravb-smu/odoo17.git'
-  stagePath: '/home/azureuser'
-  tempDeploy: '$(stagePath)/deploy-temp'
-  updateScript: '$(tempDeploy)/update_code.sh'
-  restoreDBscript: '$(tempDeploy)/restore_db.sh'
-  dbName: 'odoo'
-  dbUser: 'odoo17'
+  updateScript: '/home/azureuser/deploy-temp/update_code.sh'
+  stagePath: '/home/azureuser/'
 
 stages:
 
@@ -44,8 +40,10 @@ stages:
                 echo "Deploying branch: $(Build.SourceBranchName)"
                 cd $(stagePath)
                 rm -rf deploy-temp *-odoo17
+
                 git clone -b Staging $(repoUrl) --quiet
                 mv *-odoo17 deploy-temp
+
                 cd deploy-temp
                 rm -f .DS_Store
                 rm -rf .github
@@ -59,6 +57,7 @@ stages:
               commands: |
                 echo "$(STAGINGUSERPASSWORD)" | sudo -S -p '' chmod +x $(updateScript)
                 echo "$(STAGINGUSERPASSWORD)" | sudo -S -p '' $(updateScript)
+
 
 # =========================
 # PRODUCTION STAGE
@@ -85,9 +84,11 @@ stages:
                 set -e
                 echo "Deploying branch: $(Build.SourceBranchName)"
                 cd $(stagePath)
-                rm -rf deploy-temp odoo17
+                rm -rf deploy-temp *-odoo17
+
                 git clone -b master $(repoUrl) --quiet
-                mv odoo17 deploy-temp
+                mv *-odoo17 deploy-temp
+
                 cd deploy-temp
                 rm -f .DS_Store
                 rm -rf .github
