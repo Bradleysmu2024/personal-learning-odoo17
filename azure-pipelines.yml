@@ -111,13 +111,11 @@ stages:
               runOptions: commands
               commands: |
                 set -e
+                dbUser=${{ variables.dbUser }}
+                dbName=${{ variables.dbName }}
+                stagePath=${{ variables.stagePath }}
 
-                # Use pipeline variables directly
-                export PGPASSWORD=$DB_PASSWORD
-                dbUser=$dbUser
-                dbName=$dbName
-
-                cd $(stagePath)/deploy-temp
+                cd $stagePath/deploy-temp
 
                 echo "Dropping database if exists..."
                 psql -U "$dbUser" -d postgres -c "DROP DATABASE IF EXISTS $dbName;"
