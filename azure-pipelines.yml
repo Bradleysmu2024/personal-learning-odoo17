@@ -111,20 +111,17 @@ stages:
               runOptions: commands
               commands: |
                 set -e
-                dbUser=${{ variables.dbUser }}
-                dbName=${{ variables.dbName }}
-                stagePath=${{ variables.stagePath }}
 
-                cd $stagePath/deploy-temp
+                cd $(stagePath)/deploy-temp
 
                 echo "Dropping database if exists..."
-                psql -U "$dbUser" -d postgres -c "DROP DATABASE IF EXISTS $dbName;"
+                psql -U odoo17 -d postgres -c "DROP DATABASE IF EXISTS odoo;"
 
                 echo "Creating database..."
-                psql -U "$dbUser" -d postgres -c "CREATE DATABASE $dbName OWNER $dbUser;"
+                psql -U odoo17 -d postgres -c "CREATE DATABASE $dbName OWNER odoo17"
 
                 echo "Restoring database from uncompressed SQL..."
-                psql -U "$dbUser" -d "$dbName" -f odoo.sql
+                psql -U odoo17 -d odoo -f odoo.sql
 
                 echo "Database restore completed!"
 
